@@ -15,10 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from board import views
+from board.views import base_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index),
+    path('api-auth/', include('rest_framework.urls')), # 로그인, 로그아웃 view
+    path('', base_view.index),
     path('board/', include('board.urls')),
 ]
