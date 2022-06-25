@@ -3,4 +3,4 @@ from rest_framework.decorators import api_view
 
 @api_view(['GET'])
 def index(request):
-    return Response('Hello Board')
+    return Response('Board API')
