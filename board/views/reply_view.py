@@ -3,12 +3,22 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from ..models import Reply, Post
 from ..serializers import ReplySerializer
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.viewsets import ModelViewSet
 
-@api_view(['GET'])
-def replyList(request, format=None):
-    replys = Reply.objects.all()
-    serializer = ReplySerializer(replys, many=True)
-    return Response(serializer.data)
+class ReplyPagination(PageNumberPagination):
+    page_size = 5
+
+class ReplyListViewSet(ModelViewSet):
+    queryset = Reply.objects.all()
+    serializer_class = ReplySerializer
+    pagination_class = ReplyPagination
+
+# @api_view(['GET'])
+# def replyList(request, format=None):
+#     replys = Reply.objects.all()
+#     serializer = ReplySerializer(replys, many=True)
+#     return Response(serializer.data)
 
 @api_view(['POST'])
 def replyCreate(request, post_id, format=None):

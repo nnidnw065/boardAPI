@@ -7,7 +7,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.viewsets import ModelViewSet
 
 class PostPagination(PageNumberPagination):
-    page_size = 3
+    page_size = 8
 
 class PostListViewSet(ModelViewSet):
     queryset = Post.objects.all()
