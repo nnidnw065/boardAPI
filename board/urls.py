@@ -9,12 +9,14 @@ urlpatterns = [
     path('', base_view.index),
 
     # post_view
-    path('posts/', post_view.post_list),
-    path('post/<int:id>/', post_view.post_detail),
-    path('post/create/', post_view.post_create),
+    path('posts/', post_view.postList),
+    path('post/<int:post_id>/', post_view.postDetail),
+    path('post/create/', post_view.postCreate),
 
     # reply_view
-    path('replys/', reply_view.reply_list),
+    path('replys/', reply_view.replyList),
+    path('reply/<int:reply_id>/', reply_view.replyDetail),
+    path('<int:post_id>/reply/create/', reply_view.replyCreate),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

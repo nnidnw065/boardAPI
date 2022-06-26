@@ -11,3 +11,4 @@ class ReplySerializer(serializers.ModelSerializer):
     class Meta:
         model = Reply
         fields = '__all__'
+        read_only_fields = ['author', 'post'] # 작성자는 읽기전용으로 설정
