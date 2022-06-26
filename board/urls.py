@@ -9,7 +9,7 @@ urlpatterns = [
     path('', base_view.index),
 
     # post_view
-    path('posts/', post_view.postList),
+    path('posts/', post_view.PostListViewSet.as_view({'get': "list"})),
     path('post/<int:post_id>/', post_view.postDetail),
     path('post/create/', post_view.postCreate),
 

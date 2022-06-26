@@ -3,12 +3,22 @@ from rest_framework.decorators import api_view
 from ..models import Post
 from ..serializers import PostSerializer
 from rest_framework import status
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.viewsets import ModelViewSet
 
-@api_view(['GET'])
-def postList(request, format=None):
-    posts = Post.objects.all()
-    serializer = PostSerializer(posts, many=True)
-    return Response(serializer.data)
+class PostPagination(PageNumberPagination):
+    page_size = 3
+
+class PostListViewSet(ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    pagination_class = PostPagination
+
+# @api_view(['GET'])
+# def postList(request, format=None):
+#     posts = Post.objects.all()
+#     serializer = PostSerializer(posts, many=True)
+#     return Response(serializer.data)
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def postDetail(request, post_id, format=None):
