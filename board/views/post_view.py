@@ -5,39 +5,39 @@ from ..serializers import PostSerializer
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
 
 class PostPagination(PageNumberPagination):
     page_size = 8
 
-class PostListViewSet(ModelViewSet):
+class PostListView(ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     pagination_class = PostPagination
 
-# @api_view(['GET'])
-# def postList(request, format=None):
-#     posts = Post.objects.all()
-#     serializer = PostSerializer(posts, many=True)
-#     return Response(serializer.data)
+    def get(self, request, format=None):
+        posts = Post.objects.all()
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def postDetail(request, post_id, format=None):
-    try:
-        post = Post.objects.get(pk=post_id)
-    except Post.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    if request.method == 'GET':
+class PostDetailView(APIView):
+    def get(self, request, post_id, format=None):
+        post = get_object_or_404(Post, pk=post_id)
         serializer = PostSerializer(post)
         return Response(serializer.data)
-    elif request.method == 'PUT':
+
+    def put(self, request, post_id, format=None):
+        post = get_object_or_404(Post, pk=post_id)
         serializer = PostSerializer(post, data=request.data)
         if serializer.is_valid():
             serializer.author = request.user
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    elif request.method == 'DELETE':
+
+    def delete(self, request, post_id, format=None):
+        post = get_object_or_404(Post, pk=post_id)
         post.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
