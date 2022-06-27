@@ -9,7 +9,6 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'password', 'password2', 'email']
-        write_only_fields = ['password']
 
     def validate(self, data):
             if data['password'] != data['password2']:

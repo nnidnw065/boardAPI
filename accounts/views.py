@@ -5,7 +5,7 @@ from .serializers import UserSerializer
 from rest_framework.permissions import AllowAny
 
 @api_view(['POST'])
-# @permission_classes([AllowAny])
+@permission_classes([AllowAny])
 def signup(request, format=None):
     if request.method == 'POST':
         serializer = UserSerializer(data=request.data)
