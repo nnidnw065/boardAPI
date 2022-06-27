@@ -19,7 +19,7 @@ from board.views import base_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api-auth/', include('rest_framework.urls')), # 로그인, 로그아웃 view
+    path('api-auth/', include('rest_framework.urls')), # browsable 로그인, 로그아웃
     path('', base_view.index),
     path('board/', include('board.urls')),
     path('accounts/', include('accounts.urls')),
