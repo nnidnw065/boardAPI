@@ -1,5 +1,5 @@
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from ..models import Post
 from ..serializers import PostSerializer
 from rest_framework import status
@@ -7,6 +7,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
+from rest_framework.permissions import AllowAny
 
 class PostPagination(PageNumberPagination):
     page_size = 8
@@ -15,6 +16,7 @@ class PostListView(ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     pagination_class = PostPagination
+    permission_classes = [AllowAny]
 
     def get(self, request, format=None):
         posts = Post.objects.all()
@@ -22,6 +24,8 @@ class PostListView(ModelViewSet):
         return Response(serializer.data)
 
 class PostDetailView(APIView):
+    permission_classes = [AllowAny]
+
     def get(self, request, post_id, format=None):
         post = get_object_or_404(Post, pk=post_id)
         serializer = PostSerializer(post)
@@ -30,21 +34,25 @@ class PostDetailView(APIView):
     def put(self, request, post_id, format=None):
         post = get_object_or_404(Post, pk=post_id)
         serializer = PostSerializer(post, data=request.data)
-        if serializer.is_valid():
-            serializer.author = request.user
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if request.user.is_authenticated:
+            if serializer.is_valid():
+                serializer.author = request.user
+                serializer.save()
+                return Response(serializer.data)
+        return Response({'message': '로그인 후 가능합니다.'})
 
     def delete(self, request, post_id, format=None):
         post = get_object_or_404(Post, pk=post_id)
-        post.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        if request.user.is_authenticated:
+            post.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({'message': '로그인 후 가능합니다.'})
 
 @api_view(['POST'])
 def postCreate(request, format=None):
     serializer = PostSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save(author=request.user) # 작성자는 현재 요청을 보낸 유저로 자동저장
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    if request.user.is_authenticated:
+        if serializer.is_valid():
+            serializer.save(author=request.user) # 작성자는 현재 요청을 보낸 유저로 자동저장
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response({'message': '로그인 후 가능합니다.'})
