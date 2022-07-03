@@ -7,5 +7,6 @@ app_name = 'accounts'
 urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('login/', views.login, name='login'),
-    path('logout/', knox_view.LogoutView.as_view()),
+    path('logout/', knox_view.LogoutView.as_view(), name='logout'),
+    path('user_delete/<int:pk>/', views.UserDeleteAPI.as_view(), name='user_delete'),
 ]

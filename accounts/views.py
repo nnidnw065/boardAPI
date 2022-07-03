@@ -5,6 +5,8 @@ from .serializers import UserSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from knox.auth import AuthToken
+from rest_framework.generics import DestroyAPIView
+from django.contrib.auth.models import User
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -33,3 +35,7 @@ def login(request, format=None):
         },
         'token': token
     })
+
+class UserDeleteAPI(DestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
