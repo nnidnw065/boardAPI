@@ -42,3 +42,14 @@ def replyCreate(request, post_id, format=None):
             serializer.save(author=request.user, post=post)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response({'message': '로그인 후 가능합니다.'})
+
+@api_view(['POST'])
+def reply_like(request, pk, format=None):
+    reply = get_object_or_404(Reply, pk=pk)
+    serializer = ReplySerializer(reply)
+    user = request.user
+    if user in reply.like.all():
+        reply.like.remove(user)
+    else:
+        reply.like.add(user)
+    return Response(serializer.data)

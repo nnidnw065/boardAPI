@@ -23,3 +23,10 @@ class Reply(models.Model):
 
     def __str__(self):
         return self.content
+
+class PostCount(models.Model):
+    ip = models.CharField(max_length=30)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.ip
