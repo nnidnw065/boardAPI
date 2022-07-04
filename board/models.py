@@ -5,8 +5,11 @@ class Post(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='post_author')
     title = models.CharField(max_length=64)
     content = models.TextField()
+    image = models.ImageField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    like = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='post_like', blank=True)
+    view_count = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.title
@@ -16,6 +19,7 @@ class Reply(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reply_author')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    like = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='reply_like', blank=True)
 
     def __str__(self):
         return self.content
