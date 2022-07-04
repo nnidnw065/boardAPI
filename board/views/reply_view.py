@@ -44,7 +44,7 @@ def replyCreate(request, post_id, format=None):
     return Response({'message': '로그인 후 가능합니다.'})
 
 @api_view(['POST'])
-def reply_like(request, pk, format=None):
+def replyLike(request, pk, format=None):
     reply = get_object_or_404(Reply, pk=pk)
     serializer = ReplySerializer(reply)
     user = request.user

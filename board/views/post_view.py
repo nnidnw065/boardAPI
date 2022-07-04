@@ -1,6 +1,6 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from ..models import Post, PostCount
+from ..models import Post, PostCount, Category
 from ..serializers import PostSerializer
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
@@ -21,15 +21,14 @@ class PostPagination(PageNumberPagination):
     page_size = 8
 
 class PostListView(ModelViewSet):
-    queryset = Post.objects.all()
     serializer_class = PostSerializer
     pagination_class = PostPagination
     permission_classes = [AllowAny]
 
-    def get(self, request, format=None):
-        posts = Post.objects.all()
-        serializer = PostSerializer(posts, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        category = self.kwargs['category_name']
+        post_list = Post.objects.filter(category__name=category).order_by('-created_at')
+        return post_list
 
 class PostDetailView(APIView):
     permission_classes = [AllowAny]
@@ -80,7 +79,7 @@ def postCreate(request, format=None):
     return Response(serializer.errors)
 
 @api_view(['POST'])
-def post_like(request, pk, format=None):
+def postLike(request, pk, format=None):
     post = get_object_or_404(Post, pk=pk)
     serializer = PostSerializer(post)
     user = request.user

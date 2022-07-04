@@ -22,7 +22,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')), # browsable 로그인, 로그아웃
-    path('', base_view.index),
+    path('', base_view.IndexViewSet.as_view({'get': 'list'}), name='index'),
     path('board/', include('board.urls')),
     path('accounts/', include('accounts.urls')),
 ]

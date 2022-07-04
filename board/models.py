@@ -1,6 +1,13 @@
 from django.db import models
 from django.conf import settings
 
+class Category(models.Model):
+    name = models.CharField(max_length=20)
+    
+
+    def __str__(self):
+        return self.name
+
 class Post(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='post_author')
     title = models.CharField(max_length=64)
@@ -10,6 +17,7 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     like = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='post_like', blank=True)
     view_count = models.PositiveIntegerField(default=0)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
